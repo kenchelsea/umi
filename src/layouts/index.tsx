@@ -1,9 +1,11 @@
+// 公共layout
 import React, { Children, useState } from 'react';
 import { Button, Descriptions, Result, Avatar, Space, Statistic, Breadcrumb, Menu, Dropdown } from 'antd';
 import { LikeOutlined, UserOutlined } from '@ant-design/icons';
 import ProLayout, { PageContainer, SettingDrawer, ProSettings } from '@ant-design/pro-layout';
 import defaultProps from './_defaultProps';
-import { history  } from 'umi';
+import { history } from 'umi';
+import { removeToken } from '@/utils/auth';
 
 export default (props: any) => {
   // console.log(props);
@@ -12,6 +14,13 @@ export default (props: any) => {
     layout: 'mix',
   });
   const [pathname, setPathname] = useState(route.path);
+
+  function logout() {
+    removeToken()
+    setPathname('/login');
+    history.push('/login');
+  }
+
   return (
     <div
       id="test-pro-layout"
@@ -74,10 +83,7 @@ export default (props: any) => {
               </Menu.Item>
               <Menu.Divider />
               <Menu.Item>
-                <a target="_blank" onClick={() => {
-                    setPathname('/login');
-                    history.push('/login');
-                  }}>
+                <a target="_blank" onClick={logout}>
                   退出登录
                 </a>
               </Menu.Item>

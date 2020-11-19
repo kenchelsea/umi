@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { message, Card } from 'antd';
+import { message, Card, Checkbox } from 'antd';
+
 import { connect, history } from 'umi';
-import './index.less';
+import styles from './index.less';
 import ProForm, { ProFormText, ProFormCaptcha } from '@ant-design/pro-form';
 import { MobileTwoTone, MailTwoTone } from '@ant-design/icons';
 const tabListNoTitle = [
@@ -14,13 +15,16 @@ const tabListNoTitle = [
     tab: '手机登录',
   },
 ];
-
-const contentList = {
+interface xxObj {
+  [key: string]: any
+}
+const contentList: xxObj = {
   // 账号登录
   account: <>
+    <div className="form-label">登录账号</div>
     <ProFormText
       fieldProps={{
-        size: 'large',
+        size: 'large'
       }}
       name="username"
       placeholder="请输入账号"
@@ -35,6 +39,7 @@ const contentList = {
         // },
       ]}
     />
+    <div className="form-label">登录密码</div>
     <ProFormText.Password
       fieldProps={{
         size: 'large',
@@ -50,6 +55,7 @@ const contentList = {
     />
   </>,
   phone: <>
+    <div className="form-label">手机号</div>
     <ProFormText
       fieldProps={{
         size: 'large',
@@ -67,88 +73,107 @@ const contentList = {
         },
       ]}
     />
-    <ProFormCaptcha
-      fieldProps={{
-        size: 'large',
-      }}
-      captchaProps={{
-        size: 'large',
-      }}
-      name="captcha"
-      rules={[
-        {
-          required: true,
-          message: '请输入验证码！',
-        },
-      ]}
-      placeholder="请输入验证码"
-      onGetCaptcha={async () => {
-        // await waitTime(1000);
-        message.success('验证码发送成功!');
-      }}
-    />
+    <div className="form-label">验证码</div>
+    <div className={styles['phone-captcha']} >
+      <ProFormCaptcha
+        fieldProps={{
+          size: 'large',
+          className: 'phone-captcha-input',
+        }}
+        captchaProps={{
+          className: 'phone-captcha-code',
+          size: 'large',
+        }}
+        name="captcha"
+        rules={[
+          {
+            required: true,
+            message: '请输入验证码！',
+          },
+        ]}
+        placeholder="请输入验证码"
+        onGetCaptcha={async () => {
+          // await waitTime(1000);
+          message.success('验证码发送成功!');
+        }}
+      />
+    </div>
   </>,
 };
 
-const LoginLayout = ({dispatch}) => {
-  // console.log(props);
-  // let { dispatch } = props
-  function reqLogin(params){
-    dispatch({
+const LoginLayout = (p: any) => {
+  console.log(p);
+
+  let { dispatch, token } = p
+  // 登录按钮回调
+  async function handleFinish(values: object) {
+    await dispatch({
       type: 'user/login',
       payload: {
-        ...params,
+        ...values,
         loginType: tabIndex === 'account' ? 1 : 2,
+        isAuto
       },
     })
+    message.success('登录成功！');
+    // history.push('/')
+
+  }
+  // 是否自动登录
+  function autoLogin(e: any) {
+    setIsAuto(e.target.checked)
   }
   const [tabIndex, setTabIndex] = useState('account')
+  const [isAuto, setIsAuto] = useState(false)
   return (
     <div id="login-page" >
-      <ProForm
-        className="login-form"
-        onFinish={async (values) => {
-          await reqLogin(values);
-          console.log('提交成功！');
-          
-          message.success('提交成功！');
-          // history.push('/')
-        }}
-        submitter={{
-          searchConfig: {
-            submitText: '登录',
-          },
-          render: (_, dom) => dom.pop(),
-          submitButtonProps: {
-            size: 'large',
-            style: {
-              width: '100%',
+      <div className="card-box" >
+        <ProForm
+          className="login-form"
+          initialValues={{
+            username: 'admin',
+            password: 'dst123456'
+          }}
+          onFinish={handleFinish}
+          submitter={{
+            searchConfig: {
+              submitText: '登录',
             },
-          },
-        }}
-      >
-        <h1 className="title">
-          <img alt="logo" src="https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg" />
-          Ant Design
-        </h1>
-        
-        <Card
-          style={{ width: '100%' }}
-          tabList={tabListNoTitle}
-          activeTabKey={tabIndex}
-          onTabChange={key => setTabIndex(key)}
+            render: (_, dom) => dom.pop(),
+            submitButtonProps: {
+              size: 'large',
+              style: {
+                width: '100%',
+              },
+            },
+          }}
         >
-          {contentList[tabIndex]}
-        </Card>
-
-      </ProForm>
+          <h1 className="title">欢迎来到B端租车管理后台！</h1>
+          <Card
+            style={{ width: '100%' }}
+            tabList={tabListNoTitle}
+            activeTabKey={tabIndex}
+            bordered={false}
+            onTabChange={key => setTabIndex(key)}
+          >
+            {contentList[tabIndex]}
+          </Card>
+        </ProForm>
+        <div className="tools">
+          <Checkbox onChange={autoLogin} ><span className='color-green'>下次自动登录</span></Checkbox>
+          <div className='right'>
+            忘记密码？
+            <a onClick={() => { history.push('/register') }}>去注册</a>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
 
 
-export default connect(({ user }) => ({
-  ...user
+export default connect(({ user }: any) => ({
+  user
 }))(LoginLayout);
 
 // export default LoginLayout

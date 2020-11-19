@@ -1,24 +1,41 @@
-
 import { loginDD } from '@/services/login';
+import { setToken } from '@/utils/auth';
+
 export default {
   namespace: 'user',
   state: {
-    tabIndex2: 'article'
+    loginState: false,
+    token: null,
   },
   // 同步
   reducers: {
-    setTab(state, { payload: name }) {
-      console.log('setTab');
+    changeLoginState(state:object, { payload }: any) {
+      payload.isAuto ? setToken(payload.token, 7) : setToken(payload.token)
+      return {
+        ...state,
+        ...payload
+      }
     },
   },
   // 异步
   effects: {
-    login({payload}, effects){
-      console.log('login', payload);
-      loginDD(payload).then(res=>{
-        // let { token }= res.data
-        console.log(res);
-        
+    // 登录
+    *login({payload}:any, {call, put}:any){
+      let params = {
+        username: payload.username,
+        password: payload.password,
+        loginType: payload.loginType
+      }
+      // 请求接口
+      const res = yield call(loginDD, params)
+      let { token } = res.data
+      yield put({
+        type: 'changeLoginState',
+        payload: {
+          isAuto: payload.isAuto,
+          loginState: true,
+          token,
+        }
       })
     }
   }

@@ -1,12 +1,17 @@
 import { extend } from 'umi-request'
 import { notification } from 'antd';
 
-
+interface resData {
+  code:number,
+  status: number,
+  msg: string,
+  data: object
+}
 
 /**
  * 异常处理程序
  */
-const errorHandler = error => {
+const errorHandler = (error: resData) => {
   if (error && error.code != 200) {
     notification.error({
       description: `请求错误 ${error.code}: ${error.msg}`,
@@ -19,6 +24,7 @@ const errorHandler = error => {
       message: '网络异常',
     });
   }
+  return error
 };
 
 /**
@@ -51,13 +57,13 @@ request.interceptors.request.use((url, options) => {
   },
 );
 
-// clone response in response interceptor
+// response拦截器
 request.interceptors.response.use(async (response) => {
   const data = await response.clone().json();
   if (data && data.code === 401) {
-    location.href = '/user/login ';
+    location.href = '/login ';
   }
-  if (data && data.code !== 0) {
+  if (data && data.code !== 200) {
     throw data
   }
   return response;

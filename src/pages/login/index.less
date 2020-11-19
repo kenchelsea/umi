@@ -1,25 +1,96 @@
-
+@green: #16D1A4;
+.color-green{
+  color: @green
+}
 #login-page {
   position: relative;
   height: 100%;
-  background: #f0f2f5;
+  background: #22C8B5;
 }
-
-.ant-form.login-form {
+.card-box{
   position: absolute;
-  top: 200px;
+  top: 50%;
   right: 10%;
-  width: 400px;
-  background: #fff;
+  transform: translateY(-50%);
+  width: 520px;
+  height: 580px;
+  background: #FFFFFF;
+  border-radius: 8px;
   border: 1px solid #f0eded;
-  border-radius: 4px;
-  padding: 15px 20px 30px;
+  padding: 40px 50px;
   .title{
-    text-align: center;
-    margin-bottom: 50px;
-    img{
-      height: 44px;
-      margin-right: 16px;
+    font-size: 30px;
+    font-family: PingFangSC-Medium, PingFang SC;
+    font-weight: 500;
+    line-height: 42px;
+    letter-spacing: 1px;
+    color: @green;
+    margin-bottom: 41px;
+  }
+  .ant-card-head,.ant-card-body{
+    padding: 0;
+  }
+  .ant-tabs-tab{
+    &.ant-tabs-tab-active .ant-tabs-tab-btn{
+      font-size: 24px;
+      font-family: PingFangSC-Medium, PingFang SC;
+      font-weight: 500;
+      color: @green;
+      line-height: 33px;
     }
+    .ant-tabs-tab-btn{
+      font-size: 24px;
+      font-family: PingFangSC-Medium, PingFang SC;
+      font-weight: 500;
+      color: #999999;
+      line-height: 33px;
+    }
+  }
+  .form-label{
+    font-size: 20px;
+    font-family: PingFangSC-Medium, PingFang SC;
+    font-weight: 500;
+    color: #333333;
+    line-height: 28px;
+    margin-top: 30px;
+  }
+  .ant-input,.ant-input-affix-wrapper,.phone-captcha-code{
+    &:hover,&:focus{
+      box-shadow: none;
+    }
+    border-top: 0;
+    border-left: 0;
+    border-right: 0;
+  }
+  .phone-captcha{
+    height: 39px;
+    position: relative;
+    margin-bottom: 24px;
+    .phone-captcha-input{
+      width: 100%;
+      margin-right: 0;
+      position: absolute;
+      z-index: 1;
+    }
+    .phone-captcha-code{
+      position: absolute;
+      z-index: 2;
+      right: 0;
+      top: -6px;
+      color: @green;
+      border-bottom: 0;
+      &.ant-btn[disabled], 
+      &.ant-btn[disabled]:hover, 
+      &.ant-btn[disabled]:focus, 
+      &.ant-btn[disabled]:active{
+        background: transparent;
+      }
+    }
+  }
+
+  .tools{
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
   }
 }
